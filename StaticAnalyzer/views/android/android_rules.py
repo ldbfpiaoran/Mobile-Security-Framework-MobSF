@@ -38,8 +38,68 @@ Rule Format
 
 """
 RULES = [
+    {#  检测第三方sdk
+        'desc': '内网信息残留问题',
+        'type': 'regex',
+        'regex1': r'''(huobiapps\.com)|(hbtalk\.org)|(hwallet\.office)|(hottalk\.im)|(huobiidc)|(huobidev)|(huobiinc)''',
+        'level': 'warning',
+        'match': 'single_regex',
+        'input_case': 'lower',
+        'cvss': 1.1,
+        'cwe': 'CWE-test'
+    },
     {
-        'desc': 'Files may contain hardcoded sensitive informations like usernames, passwords, keys etc.',
+        'desc': 'webview密码明文存储风险 ',
+        'type': 'string',
+        'string1': 'setSavePassword(true)',
+        'level': 'warning',
+        'match': 'single_string',
+        'input_case': 'exact',
+        'cvss': 8.8,
+        'cwe': 'CWE-749'
+    },
+    {
+        'desc': 'zip文件解压目录遍历漏洞  请判断是否对../进行过滤 ',
+        'type': 'string',
+        'string1': 'zipEntry.getnName',
+        'level': 'high',
+        'match': 'single_string',
+        'input_case': 'lower',
+        'cvss': 8.5,
+        'cwe': 'CWE-276'
+    },
+    {#  检测第三方sdk
+        'desc': '第三方sdk',
+        'type': 'regex',
+        'regex1': r'''(import com\.alibaba\.sdk)|(import com\.google\.android)|(import com\.amap\.api)''',
+        'level': 'warning',
+        'match': 'single_regex',
+        'input_case': 'lower',
+        'cvss': 1.1,
+        'cwe': 'CWE-test'
+    },
+    {#  敏感词信息
+        'desc': 'FFmpeg  文件读取漏洞 ',
+        'type': 'regex',
+        'regex1': r'''libijkffmpeg\.so''',
+        'level': 'warning',
+        'match': 'single_regex',
+        'input_case': 'lower',
+        'cvss': 1.1,
+        'cwe': 'CWE-test'
+    },
+        {
+        'desc': 'Service组件导出风险',
+        'type': 'string',
+        'string1': 'service android:exported=true',
+        'level': 'warning',
+        'match': 'single_string',
+        'input_case': 'exact',
+        'cvss': 8.8,
+        'cwe': 'CWE-749'
+    },
+    {
+        'desc': '硬编码安全隐患  文件可能包含硬编码的敏感信息，如用户名 密码 密钥等',
         'type': 'regex',
         'regex1': r'''(password\s*=\s*['|"].+['|"]\s{0,5})|(pass\s*=\s*['|"].+['|"]\s{0,5})|(username\s*=\s*['|"].+['|"]\s{0,5})|(secret\s*=\s*['|"].+['|"]\s{0,5})|(key\s*=\s*['|"].+['|"]\s{0,5})''',
         'level': 'high',
@@ -49,15 +109,15 @@ RULES = [
         'cwe': 'CWE-312'
     },
     {
-        'desc': 'IP Address disclosure',
+        'desc': 'IP地址泄露',
         'type': 'regex',
-        'regex1': r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}',
+        'regex1': r'''(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})\.(2(5[0-5]{1}|[0-4]\d{1})|[0-1]?\d{1,2})''',   #修改匹配地址正则
         'level': 'warning',
         'match': 'single_regex',
         'input_case': 'exact',
         'cvss': 4.3,
         'cwe': 'CWE-200'
-    },
+    },  
     {
         'desc': 'Hidden elements in view can be used to hide data from user. But this data can be leaked',
         'type': 'regex',
@@ -69,7 +129,7 @@ RULES = [
         'cwe': 'CWE-919'
     },
     {
-        'desc': 'The App uses ECB mode in Cryptographic encryption algorithm. ECB mode is known to be weak as it results in the same ciphertext for identical blocks of plaintext.',
+        'desc': '使用ECB加密方式加密风险. ECB是较弱的加密方式，相同明文生成的密文相同 ',
         'type': 'regex',
         'regex1': r'Cipher\.getInstance\(\s*"\s*AES\/ECB',
         'level': 'high',
@@ -79,7 +139,7 @@ RULES = [
         'cwe': 'CWE-327'
     },
     {
-        'desc': 'This App uses RSA Crypto without OAEP padding. The purpose of the padding scheme is to prevent a number of attacks on RSA that only work when the encryption is performed without padding.',
+        'desc': 'RSA加密算法不安全使用漏洞 可能导致客户端隐私数据泄露，加密文件破解，传输数据被获取',
         'type': 'regex',
         'regex1': r'cipher\.getinstance\(\s*"rsa/.+/nopadding',
         'level': 'high',
@@ -89,7 +149,7 @@ RULES = [
         'cwe': 'CWE-780'
     },
     {
-        'desc': 'Insecure Implementation of SSL. Trusting all the certificates or accepting self signed certificates is a critical Security Hole. This application is vulnerable to MITM attacks',
+        'desc': 'MITM中间人攻击风险  APP信任所有证书或接受自签名证书',
         'type': 'regex',
         'regex1': r'javax\.net\.ssl',
         'regex2': r'TrustAllSSLSocket-Factory|AllTrustSSLSocketFactory|NonValidatingSSLSocketFactory|net\.SSLCertificateSocketFactory|ALLOW_ALL_HOSTNAME_VERIFIER|\.setDefaultHostnameVerifier\(|NullHostnameVerifier\(',
@@ -144,7 +204,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': 'Weak Hash algorithm used',
+        'desc': '使用弱哈希算法风险 ',
         'type': 'regex',
         'regex1': r'getInstance(\"md4\")|getInstance(\"rc2\")|getInstance(\"rc4\")|getInstance(\"RC4\")|getInstance(\"RC2\")|getInstance(\"MD4\")',
         'level': 'high',
@@ -154,7 +214,7 @@ RULES = [
         'cwe': 'CWE-327'
     },
     {
-        'desc': 'MD5 is a weak hash known to have hash collisions.',
+        'desc': '使用不安全的md5加密方式加密',
         'type': 'regex',
         'regex1': r'MessageDigest\.getInstance\(\"*MD5\"*\)|MessageDigest\.getInstance\(\"*md5\"*\)|DigestUtils\.md5\(',
         'level': 'high',
@@ -164,7 +224,7 @@ RULES = [
         'cwe': 'CWE-327'
     },
     {
-        'desc': 'SHA-1 is a weak hash known to have hash collisions.',
+        'desc': '使用 SHA-1实现加密   SHA-1是弱哈希',
         'type': 'regex',
         'regex1': r'MessageDigest\.getInstance\(\"*SHA-1\"*\)|MessageDigest\.getInstance\(\"*sha-1\"*\)|DigestUtils\.sha\(',
         'level': 'high',
@@ -184,7 +244,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': 'The App uses an insecure Random Number Generator.',
+        'desc': '随机数不安全使用漏洞',
         'type': 'regex',
         'regex1': r'java\.util\.Random',
         'level': 'high',
@@ -194,7 +254,7 @@ RULES = [
         'cwe': 'CWE-330'
     },
     {
-        'desc': 'The App logs information. Sensitive information should never be logged.',
+        'desc': 'App logs 记录信息风险，建议不要再日志中记录敏感信息',
         'type': 'regex',
         'regex1': r'Log\.(v|d|i|w|e|f|s)|System\.out\.print|System\.err\.print',
         'level': 'info',
@@ -204,7 +264,7 @@ RULES = [
         'cwe': 'CWE-532'
     },
     {
-        'desc': 'This App uses Java Hash Code. It\'s a weak hash function and should never be used in Secure Crypto Implementation.',
+        'desc': 'App  使用hash加密安全风险  建议使用安全得加密方式',
         'type': 'string',
         'string1': '.hashCode()',
         'level': 'high',
@@ -244,7 +304,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'App can read/write to External Storage. Any App can read data written to External Storage.',
+        'desc': '数据库文件任意读写漏洞',
         'perm': 'android.permission.WRITE_EXTERNAL_STORAGE',
         'type': 'string',
         'string1': '.getExternalStorage',
@@ -256,7 +316,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': 'App creates temp file. Sensitive information should never be written into a temp file.',
+        'desc': 'App创建临时文件风险，不应将敏感信息写入临时文件',
         'perm': 'android.permission.WRITE_EXTERNAL_STORAGE',
         'type': 'string',
         'string1': '.createTempFile(',
@@ -267,7 +327,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': 'Insecure WebView Implementation. Execution of user controlled code in WebView is a critical Security Hole.',
+        'desc': 'WebView安全风险 在webview中设置setJavaScriptEnabled(true) 导致任意代码执行  建议 Google在4.2版本之后，规定允许被调用的函数必须以@JavascriptInterface进行注解， API等于高于17的Android系统。建议不要使用addJavascriptInterface接口 ',
         'type': 'string',
         'string1': 'setJavaScriptEnabled(true)',
         'string2': '.addJavascriptInterface(',
@@ -322,7 +382,7 @@ RULES = [
         'cwe': 'CWE-329'
     },
     {
-        'desc': 'Remote WebView debugging is enabled.',
+        'desc': '开启远程webView调试风险',
         'type': 'string',
         'string1': '.setWebContentsDebuggingEnabled(true)',
         'string2': 'WebView',
@@ -344,7 +404,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'This App copies data to clipboard. Sensitive data should not be copied to clipboard as other applications can access it.',
+        'desc': '敏感信息泄露   app将数据复制到剪切板 可能导致其他应用获取剪切板的数据',
         'type': 'string',
         'string1': 'content.ClipboardManager',
         'string2': 'setPrimaryClip(',
@@ -355,7 +415,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'Insecure WebView Implementation. WebView ignores SSL Certificate errors and accept any SSL Certificate. This application is vulnerable to MITM attacks',
+        'desc': 'Webview绕过证书校验漏洞 但如果重载WebView的onReceivedSslError()函数并在其中执行handler.proceed()，客户端可以绕过证书校验错误继续访问此非法URL。',
         'type': 'string',
         'string1': 'onReceivedSslError(WebView',
         'string2': '.proceed();',
@@ -366,7 +426,7 @@ RULES = [
         'cwe': 'CWE-295'
     },
     {
-        'desc': 'App uses SQLite Database and execute raw SQL query. Untrusted user input in raw SQL queries can cause SQL Injection. Also sensitive information should be encrypted and written to the database.',
+        'desc': '使用sqlite数据库并执行原始sql查询，原始sql查询不受信任得用户输入可能导致sql注入，敏感信息也应该加密写入数据库',
         'type': 'string',
         'string1': 'android.database.sqlite',
         'string_or1': 'rawQuery(',
@@ -391,7 +451,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'This App uses an SSL Pinning Library (org.thoughtcrime.ssl.pinning) to prevent MITM attacks in secure communication channel.',
+        'desc': 'App  使用 SSL Pinning 库 (org.thoughtcrime.ssl.pinning) 防止中间人攻击',
         'type': 'string',
         'string1': 'org.thoughtcrime.ssl.pinning',
         'string_or1': 'PinningHelper.getPinnedHttpsURLConnection',
@@ -482,7 +542,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'DexGuard Signer Certificate Tamper Detection code is identified.',
+        'desc': 'DexGuard 证书签名篡改检测',
         'type': 'string',
         'string1': 'import dexguard.util',
         'string2': 'TCertificateChecker.checkCertificate',
@@ -493,7 +553,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'The App may use package signature for tamper detection.',
+        'desc': 'App 防篡改检测',
         'type': 'string',
         'string1': 'PackageManager.GET_SIGNATURES',
         'string2': 'getPackageName(',
@@ -504,7 +564,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'This App uses SafetyNet API.',
+        'desc': 'App 使用 SafetyNet API.风险',
         'type': 'string',
         'string1': 'com.google.android.gms.safetynet.SafetyNetApi',
         'level': 'good',
@@ -514,7 +574,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'This App may request root (Super User) privileges.',
+        'desc': 'App请求root权限风险 ',
         'type': 'string',
         'string1': 'com.noshufou.android.su',
         'string2': 'com.thirdparty.superuser',
@@ -528,7 +588,7 @@ RULES = [
         'cwe': 'CWE-250'
     },
     {
-        'desc': 'This App may have root detection capabilities.',
+        'desc': 'Root设备运行风险 ',
         'type': 'string',
         'string1': '.contains("test-keys")',
         'string2': '/system/app/Superuser.apk',
