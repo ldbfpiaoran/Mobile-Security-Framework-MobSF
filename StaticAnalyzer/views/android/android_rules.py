@@ -46,7 +46,7 @@ RULES = [
         'match': 'single_regex',
         'input_case': 'lower',
         'cvss': 1.1,
-        'cwe': 'CWE-test'
+        'cwe': 'inter-inf'
     },
     {
         'desc': 'webview密码明文存储风险 ',
@@ -56,7 +56,7 @@ RULES = [
         'match': 'single_string',
         'input_case': 'exact',
         'cvss': 8.8,
-        'cwe': 'CWE-749'
+        'cwe': 'webview-Cleartext'
     },
     {
         'desc': 'zip文件解压目录遍历漏洞  请判断是否对../进行过滤 ',
@@ -96,7 +96,7 @@ RULES = [
         'match': 'single_string',
         'input_case': 'exact',
         'cvss': 8.8,
-        'cwe': 'CWE-749'
+        'cwe': 'service-export'
     },
     {
         'desc': '硬编码安全隐患  文件可能包含硬编码的敏感信息，如用户名 密码 密钥等',
@@ -146,7 +146,7 @@ RULES = [
         'match': 'single_regex',
         'input_case': 'lower',
         'cvss': 5.9,
-        'cwe': 'CWE-780'
+        'cwe': 'CWE-RSA'
     },
     {
         'desc': 'MITM中间人攻击风险  APP信任所有证书或接受自签名证书',
@@ -160,7 +160,7 @@ RULES = [
         'cwe': 'CWE-295'
     },
     {
-        'desc': 'WebView load files from external storage. Files in external storage can be modified by any application.',
+        'desc': 'Webview File同源策略绕过漏洞',
         'type': 'regex',
         'regex1': r'\.loadUrl\(.*getExternalStorageDirectory\(',
         'regex2': r'webkit\.WebView',
@@ -168,7 +168,7 @@ RULES = [
         'match': 'regex_and',
         'input_case': 'exact',
         'cvss': 5.0,
-        'cwe': 'CWE-919'
+        'cwe': 'webview-Homologous'
     },
     {
         'desc': 'The file is World Readable. Any App can read from the file',
@@ -204,7 +204,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': '使用弱哈希算法风险 ',
+        'desc': 'Weak Hash algorithm used',
         'type': 'regex',
         'regex1': r'getInstance(\"md4\")|getInstance(\"rc2\")|getInstance(\"rc4\")|getInstance(\"RC4\")|getInstance(\"RC2\")|getInstance(\"MD4\")',
         'level': 'high',
@@ -313,7 +313,7 @@ RULES = [
         'match': 'string_or_and_perm',
         'input_case': 'exact',
         'cvss': 5.5,
-        'cwe': 'CWE-276'
+        'cwe': 'database-read'
     },
     {
         'desc': 'App创建临时文件风险，不应将敏感信息写入临时文件',
@@ -327,7 +327,7 @@ RULES = [
         'cwe': 'CWE-276'
     },
     {
-        'desc': 'WebView安全风险 在webview中设置setJavaScriptEnabled(true) 导致任意代码执行  建议 Google在4.2版本之后，规定允许被调用的函数必须以@JavascriptInterface进行注解， API等于高于17的Android系统。建议不要使用addJavascriptInterface接口 ',
+        'desc': 'Webview File同源策略绕过漏洞 在webview中设置setJavaScriptEnabled(true) 导致任意代码执行  建议 Google在4.2版本之后，规定允许被调用的函数必须以@JavascriptInterface进行注解， API等于高于17的Android系统。建议不要使用addJavascriptInterface接口  开发者自查@JavascriptInterface',
         'type': 'string',
         'string1': 'setJavaScriptEnabled(true)',
         'string2': '.addJavascriptInterface(',
@@ -335,7 +335,7 @@ RULES = [
         'match': 'string_and',
         'input_case': 'exact',
         'cvss': 8.8,
-        'cwe': 'CWE-749'
+        'cwe': 'Webview-Files'
     },
     {
         'desc': 'This App uses SQL Cipher. SQLCipher provides 256-bit AES encryption to sqlite database files.',
@@ -382,7 +382,7 @@ RULES = [
         'cwe': 'CWE-329'
     },
     {
-        'desc': '开启远程webView调试风险',
+        'desc': 'Remote WebView debugging is enabled.',
         'type': 'string',
         'string1': '.setWebContentsDebuggingEnabled(true)',
         'string2': 'WebView',
@@ -423,7 +423,7 @@ RULES = [
         'match': 'string_and',
         'input_case': 'exact',
         'cvss': 7.4,
-        'cwe': 'CWE-295'
+        'cwe': 'Webview-ssl'
     },
     {
         'desc': '使用sqlite数据库并执行原始sql查询，原始sql查询不受信任得用户输入可能导致sql注入，敏感信息也应该加密写入数据库',
@@ -451,7 +451,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'App  使用 SSL Pinning 库 (org.thoughtcrime.ssl.pinning) 防止中间人攻击',
+        'desc': 'This App uses an SSL Pinning Library (org.thoughtcrime.ssl.pinning) to prevent MITM attacks in secure communication channel.',
         'type': 'string',
         'string1': 'org.thoughtcrime.ssl.pinning',
         'string_or1': 'PinningHelper.getPinnedHttpsURLConnection',
@@ -542,7 +542,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'DexGuard 证书签名篡改检测',
+        'desc': 'DexGuard Signer Certificate Tamper Detection code is identified.',
         'type': 'string',
         'string1': 'import dexguard.util',
         'string2': 'TCertificateChecker.checkCertificate',
@@ -553,7 +553,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'App 防篡改检测',
+        'desc': 'The App may use package signature for tamper detection.',
         'type': 'string',
         'string1': 'PackageManager.GET_SIGNATURES',
         'string2': 'getPackageName(',
@@ -564,7 +564,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'App 使用 SafetyNet API.风险',
+        'desc': 'This App uses SafetyNet API.',
         'type': 'string',
         'string1': 'com.google.android.gms.safetynet.SafetyNetApi',
         'level': 'good',
@@ -574,7 +574,7 @@ RULES = [
         'cwe': ''
     },
     {
-        'desc': 'App请求root权限风险 ',
+        'desc': 'This App may request root (Super User) privileges.',
         'type': 'string',
         'string1': 'com.noshufou.android.su',
         'string2': 'com.thirdparty.superuser',
